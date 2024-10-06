@@ -5,13 +5,14 @@ def display_matrix(matrix):
     for row in matrix:
         print(row)
 
-def check_winner(matrix, player1, player2):
-    det = np.linalg.det(matrix)
+def check_winner(matrix):
+    numeric_matrix = np.array(matrix, dtype=float)
+    det = np.linalg.det(numeric_matrix)
     print(f"\nDeterminant of the matrix: {det:.6f}")
     if det == 0:
-        return f"{player2} wins (determinant is 0)!"
+        return "Barbara wins (determinant is 0)!"
     else:
-        return f"{player1} wins (determinant is non-zero)!"
+        return "Alan wins (determinant is non-zero)!"
 
 def get_valid_input(prompt, valid_range):
     while True:
@@ -30,47 +31,37 @@ def get_real_number(prompt):
         except ValueError:
             print("Invalid input. Please enter a real number.")
 
-def play_game(size, player1, player2):
-    matrix = np.zeros((size, size))  # Create a size x size matrix filled with zeros
-    filled_positions = set()  # Track filled positions
+def play_game(size):
+    matrix = [['x' for _ in range(size)] for _ in range(size)]
+    filled_positions = set()
 
-    players = [player1, player2]
-    turn = 0  # Player 1 starts first
+    players = ['Alan', 'Barbara']
+    turn = 0
 
     while len(filled_positions) < size * size:
         current_player = players[turn % 2]
         display_matrix(matrix)
         print(f"{current_player}'s turn.")
 
-        # Get valid row and column input
         row = get_valid_input(f"Enter row (0 to {size-1}): ", range(0, size))
         col = get_valid_input(f"Enter column (0 to {size-1}): ", range(0, size))
 
-        # Ensure the position is vacant
         while (row, col) in filled_positions:
             print("This position is already filled. Try again.")
             row = get_valid_input(f"Enter row (0 to {size-1}): ", range(0, size))
             col = get_valid_input(f"Enter column (0 to {size-1}): ", range(0, size))
 
-        # Get a valid real number
         value = get_real_number("Enter a real number to place: ")
         matrix[row][col] = value
         filled_positions.add((row, col))
 
         turn += 1
 
-    # Final matrix display
     display_matrix(matrix)
 
-    # Determine the winner and print the determinant
-    return check_winner(matrix, player1, player2)
+    return check_winner(matrix)
 
 if __name__ == "__main__":
-    print("Welcome to the Alan vs. Barbara 2008 matrix game!")
-
-    # Allow players to input their names
-    player1 = input("Enter Player 1's name: ")
-    player2 = input("Enter Player 2's name: ")
-
-    size = get_valid_input("Enter the size of the square matrix (e.g., 3 for 3x3): ", range(1, 101))  # Limiting the matrix size to 1 to 100 for practical reasons
-    print(play_game(size, player1, player2))
+    print("Welcome to the Alan vs. Barbara matrix game!")
+    size = get_valid_input("Enter the size of the square matrix (e.g., 3 for 3x3): ", range(1, 51))
+    print(play_game(size))
